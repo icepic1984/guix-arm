@@ -33,6 +33,12 @@ Download raspberry pi firmware with GIT tag corresponding to your kernel version
 Take /boot/extlinux/extlinux.conf from your rootfs partition and put it as /extlinux/extlinux.conf of your boot partition
 Open the file and edit it to look as follows:
 ```
+# This file was generated from your Guix configuration.  Any changes
+# will be lost upon reconfiguration.
+UI menu.c32
+MENU TITLE GNU Guix Boot Options
+PROMPT 1
+TIMEOUT 50
 LABEL PantherX OS with Linux-Raspberry 5.10
   MENU LABEL PantherX OS with Linux-Raspberry 5.10
   KERNEL /20nipd1ps647n085ydqqmcas6gwsqjr0-linux-raspberry-5.10/Image
