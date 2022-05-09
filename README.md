@@ -10,7 +10,7 @@ On aarch64 machine
 ```
 guix system init --skip-checks ./test-0227.scm ./rpi_root_v2
 ```
-It is important to know that due to upstream bugs it's not possible to build aarch64 rootfs on aarch64 host at the moment. Check this [gist](https://gist.github.com/shlyakpavel/3ac9a2dbcd84d747c486590466588b36) to learn more.
+It is important to know that due to upstream bugs it's not possible to build aarch64 rootfs on aarch64 host at the moment. Check this [issue](https://git.pantherx.org/development/hardware/raspberry/-/issues/2) to learn more.
 
 ## Build uboot
 On Pinebook Pro or any other aarch64 board
@@ -27,27 +27,11 @@ I used gparted to create two partitions.
 - rootfs partition with label `RASPIROOT` (can be changed to be anything, actually) type ext4 (I guess can be different, didn't test). It is recommended to make this partition not less than 2gb to fit all the GUIX/Pantherx files.
 Partition label here should also match one in `test-0277.scm` to avoid problems.
 
+Set MBR boot flag on rootfs partition (`RASPIROOT`). Bootloader won't locate and execute extlinux.conf otherwise!
+
 ## Prepare /boot/ partition
 Mount `BOOT` partition. Manually place uboot.img on its root.
-Download raspberry pi firmware with GIT tag corresponding to your kernel version. It's [1.20220120](https://github.com/raspberrypi/firmware/tree/1.20220120) at the moment. Put all files under /boot/ directory of the repo to the root directory of your `BOOT` partition.
-Take /boot/extlinux/extlinux.conf from your rootfs partition and put it as /extlinux/extlinux.conf of your boot partition
-Open the file and edit it to look as follows:
-```
-# This file was generated from your Guix configuration.  Any changes
-# will be lost upon reconfiguration.
-UI menu.c32
-MENU TITLE GNU Guix Boot Options
-PROMPT 1
-TIMEOUT 50
-LABEL PantherX OS with Linux-Raspberry 5.10
-  MENU LABEL PantherX OS with Linux-Raspberry 5.10
-  KERNEL /20nipd1ps647n085ydqqmcas6gwsqjr0-linux-raspberry-5.10/Image
-  FDTDIR /20nipd1ps647n085ydqqmcas6gwsqjr0-linux-raspberry-5.10/lib/dtbs
-  INITRD /0fh51l3amwq556nm6ggzh3dlcx1xjs1h-raw-initrd/initrd.cpio.gz
-  APPEND --root=GUIX --system=/gnu/store/22ix9jkv8fcljsdr4c44hsbv54hdl6xa-system --load=/gnu/store/22ix9jkv8fcljsdr4c44hsbv54hdl6xa-system/boot modprobe.blacklist=usbmouse,usbkbd quiet
-```
-It has all /gnu/store/ paths trimmed.
-Copy KERNEL, FDTDIR and INITRD directories mentioned in the file above to `BOOT` partition.
+Download raspberry pi firmware with GIT tag corresponding to your kernel version. It's [1.20220120](https://github.com/raspberrypi/firmware/tree/1.20220120) at the moment.
 Put `config.txt` on `BOOT` partition with the following content:
 ```
 enable_uart=1
