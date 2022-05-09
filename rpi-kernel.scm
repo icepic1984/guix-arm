@@ -2,11 +2,11 @@
 ;; To create a file, visit it with C-x C-f and enter text in its buffer.
 
 (use-modules (gnu))
-(use-modules (gnu bootloader u-boot))
-(use-modules (gnu system images pine64))
+;(use-modules (gnu bootloader u-boot))
+;(use-modules (gnu system images pine64))
 (use-modules (gnu packages linux))
 (use-modules (gnu system))
-(use-modules (gnu system file-systems))
+;(use-modules (gnu system file-systems))
 
 (use-modules (gnu))
 (use-modules (gnu packages))
