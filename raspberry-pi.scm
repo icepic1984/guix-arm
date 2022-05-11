@@ -21,6 +21,7 @@
   #:use-module (gnu bootloader u-boot)
   #:use-module (gnu image)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages image)
   #:use-module (gnu platforms arm)
   #:use-module (gnu services)
   #:use-module (gnu services base)
@@ -63,10 +64,15 @@
     (initrd-modules '())
     (kernel linux-raspberry-5.10)
     (firmware (list raspberrypi-firmware))
-    (file-systems (cons (file-system
+    (file-systems (append (list 
+                          (file-system
+                          (device (file-system-label "BOOT"))
+                          (mount-point "/boot/firmware")
+                          (type "fat32"))
+                          (file-system
                           (device (file-system-label "RASPIROOT"))
                           (mount-point "/")
-                          (type "ext4"))
+                          (type "ext4")))
                         %base-file-systems))
     (services (cons (service agetty-service-type
                              (agetty-configuration
@@ -81,14 +87,29 @@
                 (password (crypt "123" "123$456"))
                 (group "users")
                 (supplementary-groups '("wheel")))
-               %base-user-accounts))))
+                %base-user-accounts))))
+
+(define rpi-boot-partition
+  (partition
+         (size (* 40 (expt 2 20)))
+         (label "BOOT")
+         (file-system "vfat")
+         (flags '(boot))
+         (initializer (gexp initialize-efi-partition))))
+
+(define raspberry-pi-image
+  (image
+   (format 'disk-image)
+   (partitions
+   (list 
+         rpi-boot-partition
+         root-partition)
+        )))
 
 (define raspberry-pi-image-type
   (image-type
    (name 'raspberry-pi-raw)
-   (constructor (cut image-with-os
-                     (raw-with-offset-disk-image (* 9 (expt 2 20))) ;9MiB
-                     <>))))
+   (constructor (cut image-with-os raspberry-pi-image <>))))
 
 (define raspberry-pi-barebones-raw-image
   (image
