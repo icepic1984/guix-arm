@@ -29,7 +29,6 @@
   (initrd-modules '())
 
   (bootloader (bootloader-configuration
-               ;; (bootloader u-boot-pine64-lts-bootloader)
                (bootloader  u-boot-rpi-4-bootloader)
                (targets '("/dev/vda"))))
   (file-systems (cons (file-system
@@ -48,4 +47,3 @@
   (services %base-services)
 
 )
-
