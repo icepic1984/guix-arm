@@ -74,13 +74,7 @@
                           (mount-point "/")
                           (type "ext4")))
                         %base-file-systems))
-    (services (cons (service agetty-service-type
-                             (agetty-configuration
-                              (extra-options '("-L")) ; no carrier detect
-                              (baud-rate "1500000")
-                              (term "vt100")
-                              (tty "ttyS2")))
-                    %base-services))
+    (services %base-services)
     (users (cons (user-account
                 (name "pi")
                 (comment "raspberrypi user")
