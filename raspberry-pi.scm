@@ -16,7 +16,7 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu system images pinebook-pro)
+(define-module (gnu system images raspberry-pi)
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader u-boot)
   #:use-module (gnu image)
