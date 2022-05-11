@@ -91,20 +91,22 @@
 
 (define rpi-boot-partition
   (partition
-         (size (* 40 (expt 2 20)))
+         (size (* 128 (expt 2 20)))
          (label "BOOT")
          (file-system "vfat")
-         (flags '(boot))
          (initializer (gexp initialize-efi-partition))))
+(define rpi-root-partition
+  (partition
+   (size 'guess)
+   (label "RASPIROOT")
+   (file-system "ext4")
+   (flags '(boot))
+   (initializer (gexp initialize-root-partition))))
 
 (define raspberry-pi-image
   (image
    (format 'disk-image)
-   (partitions
-   (list 
-         rpi-boot-partition
-         root-partition)
-        )))
+   (partitions (list rpi-boot-partition rpi-root-partition))))
 
 (define raspberry-pi-image-type
   (image-type
