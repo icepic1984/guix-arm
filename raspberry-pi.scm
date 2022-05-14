@@ -102,7 +102,7 @@
          (initializer (gexp (lambda* (root #:key
                                        grub-efi
                                        #:allow-other-keys)
-                              (display "abc"))))))
+                              (install-efi-loader grub-efi root))))))
          
 (define rpi-root-partition
   (partition
