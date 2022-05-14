@@ -28,10 +28,20 @@
   #:use-module (gnu system)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system image)
+  #:use-module (ice-9 ftw)
+  #:use-module (ice-9 match)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-19)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
+  #:use-module (guix gexp)
+  #:use-module ((srfi srfi-1) #:prefix srfi-1:)
+  #:use-module (srfi srfi-11)
+
   #:export (raspbery-pi-barebones-os
             raspbery-pi-image-type
-            raspbery-pi-barebones-raw-image))
+            raspbery-pi-barebones-raw-image
+            initialize-rpi-efi-partition))
 
 (use-modules (gnu)
              (gnu bootloader u-boot))
@@ -39,6 +49,7 @@
 (use-modules (nongnu packages linux))
 
 (include "rpi-kernel.scm")
+(include "rpi-firmware.scm")
 
 (define u-boot-rpi-4
   (make-u-boot-package "rpi_4" "aarch64-linux-gnu"))
@@ -68,7 +79,7 @@
                           (file-system
                           (device (file-system-label "BOOT"))
                           (mount-point "/boot/firmware")
-                          (type "fat32"))
+                          (type "vfat"))
                           (file-system
                           (device (file-system-label "RASPIROOT"))
                           (mount-point "/")
@@ -83,12 +94,27 @@
                 (supplementary-groups '("wheel")))
                 %base-user-accounts))))
 
+;(define* (initialize-rpi-efi-partition root
+;                                   #:key
+;                                   grub-efi
+;                                   #:allow-other-keys)
+;  "Install in ROOT directory, an EFI loader using GRUB-EFI."
+;  (install-efi-loader grub-efi root))
+;
+(define* (ion root
+                                   #:key
+                                   grub-efi
+                                   #:allow-other-keys)
+                                     (display "abc"))
+
 (define rpi-boot-partition
   (partition
          (size (* 128 (expt 2 20)))
          (label "BOOT")
          (file-system "vfat")
-         (initializer (gexp initialize-efi-partition))))
+         (flags '())
+         (initializer (gexp ion))))
+         
 (define rpi-root-partition
   (partition
    (size 'guess)
@@ -112,6 +138,7 @@
    (inherit
     (os+platform->image raspberry-pi-barebones-os aarch64-linux
                         #:type raspberry-pi-image-type))
+   (partition-table-type 'mbr)
    (name 'raspberry-pi-barebones-raw-image)))
 
 ;; Return the default image.
