@@ -41,7 +41,7 @@
   #:export (raspbery-pi-barebones-os
             raspbery-pi-image-type
             raspbery-pi-barebones-raw-image
-            initialize-rpi-efi-partition))
+            initialize-rpi-fw-partition))
 
 (use-modules (gnu)
              (gnu bootloader u-boot))
@@ -49,7 +49,6 @@
 (use-modules (nongnu packages linux))
 
 (include "rpi-kernel.scm")
-(include "rpi-firmware.scm")
 
 (define u-boot-rpi-4
   (make-u-boot-package "rpi_4" "aarch64-linux-gnu"))
@@ -94,26 +93,16 @@
                 (supplementary-groups '("wheel")))
                 %base-user-accounts))))
 
-;(define* (initialize-rpi-efi-partition root
-;                                   #:key
-;                                   grub-efi
-;                                   #:allow-other-keys)
-;  "Install in ROOT directory, an EFI loader using GRUB-EFI."
-;  (install-efi-loader grub-efi root))
-;
-(define* (ion root
-                                   #:key
-                                   grub-efi
-                                   #:allow-other-keys)
-                                     (display "abc"))
-
 (define rpi-boot-partition
   (partition
          (size (* 128 (expt 2 20)))
          (label "BOOT")
          (file-system "vfat")
          (flags '())
-         (initializer (gexp ion))))
+         (initializer (gexp (lambda* (root #:key
+                                       grub-efi
+                                       #:allow-other-keys)
+                              (display "abc"))))))
          
 (define rpi-root-partition
   (partition
