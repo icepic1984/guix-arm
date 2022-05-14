@@ -28,20 +28,11 @@
   #:use-module (gnu system)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system image)
-  #:use-module (ice-9 ftw)
-  #:use-module (ice-9 match)
   #:use-module (srfi srfi-26)
-  #:use-module (srfi srfi-19)
-  #:use-module (srfi srfi-34)
-  #:use-module (srfi srfi-35)
-  #:use-module (guix gexp)
-  #:use-module ((srfi srfi-1) #:prefix srfi-1:)
-  #:use-module (srfi srfi-11)
 
   #:export (raspbery-pi-barebones-os
             raspbery-pi-image-type
-            raspbery-pi-barebones-raw-image
-            initialize-rpi-fw-partition))
+            raspbery-pi-barebones-raw-image))
 
 (use-modules (gnu)
              (gnu bootloader u-boot))
