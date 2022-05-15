@@ -89,7 +89,7 @@
          (size (* 128 (expt 2 20)))
          (label "BOOT")
          (file-system "vfat")
-         (flags '())
+         (flags '(esp))
          (initializer (gexp (lambda* (root #:key
                                        grub-efi
                                        #:allow-other-keys)
