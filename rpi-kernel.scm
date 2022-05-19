@@ -102,7 +102,24 @@
      (substitute-keyword-arguments (package-arguments linux-libre-5.10)
        ((#:phases phases)
         #~(modify-phases #$phases
+           ;; stolen from https://www.mail-archive.com/help-guix@gnu.org/msg07219.html
+           ;; required as long as 968f541c36c28c413f696558505f902d0a133d58
+           ;; is not merged
+           (add-before 'configure 'fix-CPATH
+             (lambda _
+               ;; Temporary hack to remove -checkout/include which breaks things. ;; Why is this not necessary when building in a ‘guix environment’ ;; and in the Guix linux-libre package? Git-checkout-related?
+               (setenv "C_INCLUDE_PATH" (string-join
+                                (cdr (string-split (getenv "C_INCLUDE_PATH") #\:))
+                                ":"))
 
+               (setenv "CPLUS_INCLUDE_PATH" (string-join
+                                (cdr (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+                                ":"))
+
+               (setenv "LIBRARY_PATH" (string-join
+                                (cdr (string-split (getenv "LIBRARY_PATH") #\:))
+                                ":"))
+               #t))
          (replace 'configure
            (lambda* (#:key inputs native-inputs target #:allow-other-keys)
              ;; Avoid introducing timestamps
