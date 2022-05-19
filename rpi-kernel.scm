@@ -13,6 +13,7 @@
 (use-modules (gnu packages base))
 (use-modules (gnu packages compression))
 (use-modules (gnu packages linux))
+(use-modules (guix gexp))
 (use-modules (guix licenses))
 (use-modules (guix packages))
 (use-modules (guix utils))
@@ -100,25 +101,7 @@
     (arguments
      (substitute-keyword-arguments (package-arguments linux-libre-5.10)
        ((#:phases phases)
-        `(modify-phases ,phases
-           ;; stolen from https://www.mail-archive.com/help-guix@gnu.org/msg07219.html
-           ;; required as long as 968f541c36c28c413f696558505f902d0a133d58
-           ;; is not merged
-           (add-before 'configure 'fix-CPATH
-             (lambda _
-               ;; Temporary hack to remove -checkout/include which breaks things. ;; Why is this not necessary when building in a ‘guix environment’ ;; and in the Guix linux-libre package? Git-checkout-related?
-               (setenv "C_INCLUDE_PATH" (string-join
-                                (cdr (string-split (getenv "C_INCLUDE_PATH") #\:))
-                                ":"))
-
-               (setenv "CPLUS_INCLUDE_PATH" (string-join
-                                (cdr (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
-                                ":"))
-
-               (setenv "LIBRARY_PATH" (string-join
-                                (cdr (string-split (getenv "LIBRARY_PATH") #\:))
-                                ":"))
-               #t))
+        #~(modify-phases #$phases
 
          (replace 'configure
            (lambda* (#:key inputs native-inputs target #:allow-other-keys)
@@ -127,7 +110,7 @@
              (setenv "KBUILD_BUILD_TIMESTAMP" (getenv "SOURCE_DATE_EPOCH"))
 
              ;; Set ARCH and CROSS_COMPILE
-             (let ((arch ,(system->linux-architecture
+             (let ((arch #$(system->linux-architecture
                            (or (%current-target-system)
                                (%current-system)))))
                (setenv "ARCH" arch)
@@ -139,9 +122,8 @@
                          (getenv "CROSS_COMPILE"))))
 
              (invoke "make" "bcm2711_defconfig")
-
                (let ((port (open-file ".config" "a"))
-                     (extra-configuration ,(config->string %default-extra-linux-options)))
+                     (extra-configuration #$(config->string %default-extra-linux-options)))
                  (display extra-configuration port)
                  (close-port port))
 
