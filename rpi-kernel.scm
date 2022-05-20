@@ -90,10 +90,7 @@
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/raspberrypi/linux")
-                    ;; (commit "6cfe1a8b600aede17d8af723790eb58592d62f8a")))
-                    ;; (commit "1.20211007")
-		    (commit "1.20220120")
-		    ))
+		                (commit "1.20220120")))
               (file-name (string-append "linux-" version))
               (sha256
                (base32
@@ -103,8 +100,8 @@
        ((#:phases phases)
         #~(modify-phases #$phases
 
-         (replace 'configure
-           (lambda* (#:key inputs native-inputs target #:allow-other-keys)
+          (replace 'configure
+           (lambda* (#:key inputs target #:allow-other-keys)
              ;; Avoid introducing timestamps
              (setenv "KCONFIG_NOTIMESTAMP" "1")
              (setenv "KBUILD_BUILD_TIMESTAMP" (getenv "SOURCE_DATE_EPOCH"))
@@ -114,6 +111,7 @@
                            (or (%current-target-system)
                                (%current-system)))))
                (setenv "ARCH" arch)
+               (setenv "KERNEL" "kernel8")
                (format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
 
                (when target
