@@ -1,12 +1,6 @@
-;; This buffer is for text that is not saved, and for Lisp evaluation.
-;; To create a file, visit it with C-x C-f and enter text in its buffer.
-
 (use-modules (gnu))
-;(use-modules (gnu bootloader u-boot))
-;(use-modules (gnu system images pine64))
 (use-modules (gnu packages linux))
 (use-modules (gnu system))
-;(use-modules (gnu system file-systems))
 
 (use-modules (gnu))
 (use-modules (gnu packages))
@@ -102,10 +96,14 @@
         #~(modify-phases #$phases
 
           (replace 'configure
-           (lambda* (#:key inputs target #:allow-other-keys)
-             ;; Avoid introducing timestamps
-             (setenv "KCONFIG_NOTIMESTAMP" "1")
-             (setenv "KBUILD_BUILD_TIMESTAMP" (getenv "SOURCE_DATE_EPOCH"))
+            (lambda* (#:key inputs target #:allow-other-keys)
+              ;; Avoid introducing timestamps
+              (setenv "KCONFIG_NOTIMESTAMP" "1")
+              (setenv "KBUILD_BUILD_TIMESTAMP" (getenv "SOURCE_DATE_EPOCH"))
+
+               ;; Other variables useful for reproducibility.
+               (setenv "KBUILD_BUILD_USER" "guix")
+                  (setenv "KBUILD_BUILD_HOST" "guix")
 
              ;; Set ARCH and CROSS_COMPILE.
              (let ((arch #$(platform-linux-architecture
