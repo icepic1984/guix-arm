@@ -23,12 +23,12 @@
 
 (define (config->string options)
   (string-join (map (match-lambda
-                      ((option . 'm)
-                       (string-append option "=m"))
-                      ((option . #t)
-                       (string-append option "=y"))
-                      ((option . #f)
-                       (string-append option "=n")))
+                     ((option . 'm)
+                      (string-append option "=m"))
+                     ((option . #t)
+                      (string-append option "=y"))
+                     ((option . #f)
+                      (string-append option "=n")))
                     options)
                "\n"))
 
@@ -78,50 +78,50 @@
 
 (define-public linux-raspberry-5.10
   (package
-    (inherit linux-libre-5.10)
-    (name "linux-raspberry")
-    (version "5.10")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/raspberrypi/linux")
-		                (commit "1.20220120")))
-              (file-name (string-append "linux-" version))
-              (sha256
-               (base32
-                "1hawkjn9nyxpbkisfnifrp7m3a1abbyqmpab5mkw56zavksz281r"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments linux-libre-5.10)
-       ((#:phases phases)
-        #~(modify-phases #$phases
+   (inherit linux-libre-5.10)
+   (name "linux-raspberry")
+   (version "5.10")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/raspberrypi/linux")
+		  (commit "1.20220120")))
+            (file-name (string-append "linux-" version))
+            (sha256
+             (base32
+              "1hawkjn9nyxpbkisfnifrp7m3a1abbyqmpab5mkw56zavksz281r"))))
+   (arguments
+    (substitute-keyword-arguments (package-arguments linux-libre-5.10)
+				  ((#:phases phases)
+				   #~(modify-phases #$phases
 
-          (replace 'configure
-            (lambda* (#:key inputs target #:allow-other-keys)
-              ;; Avoid introducing timestamps
-              (setenv "KCONFIG_NOTIMESTAMP" "1")
-              (setenv "KBUILD_BUILD_TIMESTAMP" (getenv "SOURCE_DATE_EPOCH"))
+						    (replace 'configure
+							     (lambda* (#:key inputs target #:allow-other-keys)
+								      ;; Avoid introducing timestamps
+								      (setenv "KCONFIG_NOTIMESTAMP" "1")
+								      (setenv "KBUILD_BUILD_TIMESTAMP" (getenv "SOURCE_DATE_EPOCH"))
 
-               ;; Other variables useful for reproducibility.
-               (setenv "KBUILD_BUILD_USER" "guix")
-                  (setenv "KBUILD_BUILD_HOST" "guix")
+								      ;; Other variables useful for reproducibility.
+								      (setenv "KBUILD_BUILD_USER" "guix")
+								      (setenv "KBUILD_BUILD_HOST" "guix")
 
-             ;; Set ARCH and CROSS_COMPILE.
-             (let ((arch #$(platform-linux-architecture
-                                  (lookup-platform-by-target-or-system
-                                   (or (%current-target-system)
-                                       (%current-system))))))
-              (setenv "ARCH" arch)
-              (format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
+								      ;; Set ARCH and CROSS_COMPILE.
+								      (let ((arch #$(platform-linux-architecture
+										     (lookup-platform-by-target-or-system
+										      (or (%current-target-system)
+											  (%current-system))))))
+									(setenv "ARCH" arch)
+									(format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
 
-              (when target
-                (setenv "CROSS_COMPILE" (string-append target "-"))
-                (format #t "`CROSS_COMPILE' set to `~a'~%"
-                  (getenv "CROSS_COMPILE"))))
+									(when target
+									  (setenv "CROSS_COMPILE" (string-append target "-"))
+									  (format #t "`CROSS_COMPILE' set to `~a'~%"
+										  (getenv "CROSS_COMPILE"))))
 
-             (invoke "make" "bcm2711_defconfig")
-               (let ((port (open-file ".config" "a"))
-                     (extra-configuration #$(config->string %default-extra-linux-options)))
-                 (display extra-configuration port)
-                 (close-port port))
+								      (invoke "make" "bcm2711_defconfig")
+								      (let ((port (open-file ".config" "a"))
+									    (extra-configuration #$(config->string %default-extra-linux-options)))
+									(display extra-configuration port)
+									(close-port port))
 
-             ))))))))
+								      ))))))))

@@ -56,45 +56,45 @@
 
 (define raspberry-pi-barebones-os
   (operating-system
-    (host-name "viso")
-    (timezone "Europe/Paris")
-    (locale "en_US.utf8")
-    (bootloader (bootloader-configuration
-               (bootloader  u-boot-rpi-4-bootloader)
-               (targets '("/dev/vda"))))
-    (initrd-modules '())
-    (kernel linux-raspberry-5.10)
-    (firmware (list raspberrypi-firmware))
-    (file-systems (append (list 
+   (host-name "viso")
+   (timezone "Europe/Paris")
+   (locale "en_US.utf8")
+   (bootloader (bootloader-configuration
+		(bootloader  u-boot-rpi-4-bootloader)
+		(targets '("/dev/vda"))))
+   (initrd-modules '())
+   (kernel linux-raspberry-5.10)
+   (firmware (list raspberrypi-firmware))
+   (file-systems (append (list 
                           (file-system
-                          (device (file-system-label "BOOT"))
-                          (mount-point "/boot/firmware")
-                          (type "vfat"))
+                           (device (file-system-label "BOOT"))
+                           (mount-point "/boot/firmware")
+                           (type "vfat"))
                           (file-system
-                          (device (file-system-label "RASPIROOT"))
-                          (mount-point "/")
-                          (type "ext4")))
-                        %base-file-systems))
-    (services %base-services)
-    (users (cons (user-account
-                (name "pi")
-                (comment "raspberrypi user")
-                (password (crypt "123" "123$456"))
-                (group "users")
-                (supplementary-groups '("wheel")))
+                           (device (file-system-label "RASPIROOT"))
+                           (mount-point "/")
+                           (type "ext4")))
+                         %base-file-systems))
+   (services %base-services)
+   (users (cons (user-account
+                 (name "pi")
+                 (comment "raspberrypi user")
+                 (password (crypt "123" "123$456"))
+                 (group "users")
+                 (supplementary-groups '("wheel")))
                 %base-user-accounts))))
 
 (define rpi-boot-partition
   (partition
-         (size (* 128 (expt 2 20)))
-         (label "BOOT")
-         (file-system "vfat")
-         (flags '())
-         (initializer (gexp (lambda* (root #:key
-                                       grub-efi
-                                       #:allow-other-keys)
-                              (install-efi-loader grub-efi root))))))
-         
+   (size (* 128 (expt 2 20)))
+   (label "BOOT")
+   (file-system "vfat")
+   (flags '())
+   (initializer (gexp (lambda* (root #:key
+                                 grub-efi
+                                 #:allow-other-keys)
+                               (install-efi-loader grub-efi root))))))
+
 (define rpi-root-partition
   (partition
    (size 'guess)
