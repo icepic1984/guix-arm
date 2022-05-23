@@ -13,6 +13,7 @@
 (use-modules (gnu packages base))
 (use-modules (gnu packages compression))
 (use-modules (gnu packages linux))
+(use-modules (gnu platform))
 (use-modules (guix gexp))
 (use-modules (guix licenses))
 (use-modules (guix packages))
@@ -106,18 +107,18 @@
              (setenv "KCONFIG_NOTIMESTAMP" "1")
              (setenv "KBUILD_BUILD_TIMESTAMP" (getenv "SOURCE_DATE_EPOCH"))
 
-             ;; Set ARCH and CROSS_COMPILE
-             (let ((arch #$(system->linux-architecture
-                           (or (%current-target-system)
-                               (%current-system)))))
-               (setenv "ARCH" arch)
-               (setenv "KERNEL" "kernel8")
-               (format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
+             ;; Set ARCH and CROSS_COMPILE.
+             (let ((arch #$(platform-linux-architecture
+                                  (lookup-platform-by-target-or-system
+                                   (or (%current-target-system)
+                                       (%current-system))))))
+              (setenv "ARCH" arch)
+              (format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
 
-               (when target
-                 (setenv "CROSS_COMPILE" (string-append target "-"))
-                 (format #t "`CROSS_COMPILE' set to `~a'~%"
-                         (getenv "CROSS_COMPILE"))))
+              (when target
+                (setenv "CROSS_COMPILE" (string-append target "-"))
+                (format #t "`CROSS_COMPILE' set to `~a'~%"
+                  (getenv "CROSS_COMPILE"))))
 
              (invoke "make" "bcm2711_defconfig")
                (let ((port (open-file ".config" "a"))
