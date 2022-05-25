@@ -22,12 +22,12 @@
   #:use-module (gnu image)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages image)
-  #:use-module (gnu platforms arm)
   #:use-module (gnu services)
   #:use-module (gnu services base)
   #:use-module (gnu system)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system image)
+  #:use-module (guix platforms arm)
   #:use-module (srfi srfi-26)
 
   #:export (raspbery-pi-barebones-os

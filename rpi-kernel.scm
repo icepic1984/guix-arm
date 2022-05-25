@@ -7,7 +7,6 @@
 (use-modules (gnu packages base))
 (use-modules (gnu packages compression))
 (use-modules (gnu packages linux))
-(use-modules (gnu platform))
 (use-modules (guix gexp))
 (use-modules (guix licenses))
 (use-modules (guix packages))
@@ -18,6 +17,7 @@
 (use-modules (guix build-system gnu))
 (use-modules (guix build-system linux-module))
 (use-modules (guix build-system trivial))
+(use-modules (guix platform))
 (use-modules (ice-9 match))
 (use-modules (nonguix licenses))
 
