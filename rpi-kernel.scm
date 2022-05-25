@@ -114,6 +114,17 @@
 									(format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
 
 									(when target
+									  (setenv "C_INCLUDE_PATH" (string-join
+												    (cdr (string-split (getenv "C_INCLUDE_PATH") #\:))
+												    ":"))
+
+									  (setenv "CPLUS_INCLUDE_PATH" (string-join
+													(cdr (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+													":"))
+
+									  (setenv "LIBRARY_PATH" (string-join
+												  (cdr (string-split (getenv "LIBRARY_PATH") #\:))
+												  ":"))
 									  (setenv "CROSS_COMPILE" (string-append target "-"))
 									  (format #t "`CROSS_COMPILE' set to `~a'~%"
 										  (getenv "CROSS_COMPILE"))))
