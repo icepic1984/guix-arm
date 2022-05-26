@@ -19,7 +19,7 @@ make -j4
 ```
 On other platforms (such as x86) one should also configure cross compiler with `export CROSS_COMPILE=aarch64-linux-gnu-`
 
-## Reartition SD card
+## Repartition SD card
 Manually reformat `BOOT` partition (fat16) to fat32.
 
 ## Prepare /boot/ partition
