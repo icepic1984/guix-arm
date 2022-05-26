@@ -88,7 +88,7 @@
   (partition
    (size (* 128 (expt 2 20)))
    (label "BOOT")
-   (file-system "vfat")
+   (file-system "fat32")
    (flags '())
    (initializer (gexp (lambda* (root #:key
                                  grub-efi
