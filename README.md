@@ -17,6 +17,7 @@ git clone git://git.denx.de/u-boot.git
 make rpi_4_defconfig
 make -j4
 ```
+I tested at commit 8b2b125e95c44bb007b4573945f4aedb8a56222c
 On other platforms (such as x86) one should also configure cross compiler with `export CROSS_COMPILE=aarch64-linux-gnu-`
 
 ## Repartition SD card
