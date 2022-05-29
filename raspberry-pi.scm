@@ -38,8 +38,18 @@
              (gnu bootloader u-boot))
 (use-package-modules bootloaders screen ssh)
 (use-modules (nongnu packages linux))
+(use-modules (guix gexp))
 
 (include "rpi-kernel.scm")
+
+
+(define (install-rpi-efi-loader grub-efi esp)
+  "Install in ESP directory the given GRUB-EFI bootloader.  Configure it to
+load the Grub bootloader located in the 'Guix_image' root partition."
+  (let ((uboot-binary "/libexec/u-boot.bin"))
+    (copy-file #$(file-append (u-boot-rpi-4) uboot-binary ) "/")))
+    
+
 
 (define u-boot-rpi-4
   (make-u-boot-package "rpi_4" "aarch64-linux-gnu"))
@@ -93,7 +103,12 @@
    (initializer (gexp (lambda* (root #:key
                                  grub-efi
                                  #:allow-other-keys)
-                               (install-efi-loader grub-efi root))))))
+                                 (use-modules (guix build utils))
+                                 (mkdir-p root)
+                                (copy-recursively #$(file-append u-boot-rpi-4 "/libexec/u-boot.bin" )
+                                (string-append root "/u-boot.bin"))
+    
+    )))))
 
 (define rpi-root-partition
   (partition
