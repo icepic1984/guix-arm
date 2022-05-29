@@ -10,21 +10,8 @@ guix system image raspberry-pi.scm --skip-checks --verbosity=3```
 ## Flash Image to sd card
 I use either Balena Etcher or dd.
 
-## Build uboot
-On Pinebook Pro, Raspberry PI or any other aarch64 board
-```
-git clone git://git.denx.de/u-boot.git
-make rpi_4_defconfig
-make -j4
-```
-I tested at commit 8b2b125e95c44bb007b4573945f4aedb8a56222c
-On other platforms (such as x86) one should also configure cross compiler with `export CROSS_COMPILE=aarch64-linux-gnu-`
-
-## Repartition SD card
-Manually reformat `BOOT` partition (fat16) to fat32.
-
 ## Prepare /boot/ partition
-Mount `BOOT` partition. Manually place uboot.img on its root.
+Mount `BOOT` partition.
 Download raspberry pi firmware with GIT tag corresponding to your kernel version. It's [1.20220120](https://github.com/raspberrypi/firmware/tree/1.20220120) at the moment.
 Put `config.txt` on `BOOT` partition with the following content:
 ```
