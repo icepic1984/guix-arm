@@ -108,7 +108,10 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                                 (copy-recursively #$(file-append u-boot-rpi-4 "/libexec/u-boot.bin" )
                                 (string-append root "/u-boot.bin"))
                                 (copy-recursively #$(file-append raspberrypi-firmware "/" ) root)
-    
+                                (copy-recursively #$(local-file "config.txt")
+                                (string-append root "/config.txt"))
+                                (copy-recursively #$(local-file "cmdline.txt")
+                                (string-append root "/cmdline.txt"))
     )))))
 
 (define rpi-root-partition
