@@ -5,8 +5,6 @@
 (use-modules ((guix licenses) #:prefix license:))
 (use-modules (guix build-system linux-module))
 
-(include "rpi-kernel.scm")
-
 (define-public bq24179-charger-linux-module
   (package
     (name "bq24179-charger-linux-module")
@@ -103,4 +101,6 @@
      "This is a linux kernel driver for MIPI-DSI panel with touch panel attached to I2C bus.")
     (license license:gpl2)))
 
-mipi_dsi-linux-module
+(define %reterminal-kernel-modules
+(list bq24179-charger-linux-module lis3lv02d-linux-module ltr30x-linux-module
+         mipi_dsi-linux-module))

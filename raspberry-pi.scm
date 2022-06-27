@@ -41,6 +41,7 @@
 (use-modules (guix gexp))
 
 (include "rpi-kernel.scm")
+(include "reterminal.scm")
 
 
 (define (install-rpi-efi-loader grub-efi esp)
@@ -84,13 +85,15 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                            (type "ext4")))
                          %base-file-systems))
    (services %base-services)
+   (packages %base-packages)
    (users (cons (user-account
                  (name "pi")
                  (comment "raspberrypi user")
                  (password (crypt "123" "123$456"))
                  (group "users")
                  (supplementary-groups '("wheel")))
-                %base-user-accounts))))
+                %base-user-accounts))
+    (kernel-loadable-modules %reterminal-kernel-modules)))
 
 (define rpi-boot-partition
   (partition
