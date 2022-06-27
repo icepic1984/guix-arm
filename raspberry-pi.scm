@@ -93,7 +93,7 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                  (group "users")
                  (supplementary-groups '("wheel")))
                 %base-user-accounts))
-    (kernel-loadable-modules %reterminal-kernel-modules)))
+   (kernel-loadable-modules %reterminal-kernel-modules)))
 
 (define rpi-boot-partition
   (partition
@@ -104,16 +104,16 @@ load the Grub bootloader located in the 'Guix_image' root partition."
    (initializer (gexp (lambda* (root #:key
                                  grub-efi
                                  #:allow-other-keys)
-                                 (use-modules (guix build utils))
-                                 (mkdir-p root)
-                                (copy-recursively #$(file-append u-boot-rpi-arm64 "/libexec/u-boot.bin" )
-                                (string-append root "/u-boot.bin"))
-                                (copy-recursively #$(file-append raspberrypi-firmware "/" ) root)
-                                (copy-recursively #$(local-file "config.txt")
-                                (string-append root "/config.txt"))
-                                (copy-recursively #$(local-file "cmdline.txt")
-                                (string-append root "/cmdline.txt"))
-    )))))
+                               (use-modules (guix build utils))
+                               (mkdir-p root)
+                               (copy-recursively #$(file-append u-boot-rpi-arm64 "/libexec/u-boot.bin" )
+						 (string-append root "/u-boot.bin"))
+                               (copy-recursively #$(file-append raspberrypi-firmware "/" ) root)
+                               (copy-recursively #$(local-file "config.txt")
+						 (string-append root "/config.txt"))
+                               (copy-recursively #$(local-file "cmdline.txt")
+						 (string-append root "/cmdline.txt"))
+			       )))))
 
 (define rpi-root-partition
   (partition
