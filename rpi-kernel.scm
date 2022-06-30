@@ -85,11 +85,11 @@
             (method git-fetch)
             (uri (git-reference
                   (url "https://github.com/raspberrypi/linux")
-		  (commit "1.20220120")))
+		  (commit "1.20220331")))
             (file-name (string-append "linux-" version))
             (sha256
              (base32
-              "1hawkjn9nyxpbkisfnifrp7m3a1abbyqmpab5mkw56zavksz281r"))))
+              "1k18cwnsqdy5ckymy92kp8czckzwgn8wn2zdibzrrg9jxrflx6vl"))))
    (arguments
     (substitute-keyword-arguments (package-arguments linux-libre-5.10)
 				  ((#:phases phases)
@@ -128,7 +128,7 @@
 									  (setenv "CROSS_COMPILE" (string-append target "-"))
 									  (format #t "`CROSS_COMPILE' set to `~a'~%"
 										  (getenv "CROSS_COMPILE"))))
-
+								      (setenv "KERNEL" "kernel8")
 								      (invoke "make" "bcm2711_defconfig")
 								      (let ((port (open-file ".config" "a"))
 									    (extra-configuration #$(config->string %default-extra-linux-options)))

@@ -41,28 +41,27 @@
 (use-modules (guix gexp))
 
 (include "rpi-kernel.scm")
+(include "reterminal.scm")
 
 
 (define (install-rpi-efi-loader grub-efi esp)
   "Install in ESP directory the given GRUB-EFI bootloader.  Configure it to
 load the Grub bootloader located in the 'Guix_image' root partition."
   (let ((uboot-binary "/libexec/u-boot.bin"))
-    (copy-file #$(file-append (u-boot-rpi-4) uboot-binary ) "/")))
-    
+    (copy-file #$(file-append (u-boot-rpi-arm64) uboot-binary ) "/")))
 
+(define u-boot-rpi-arm64
+  (make-u-boot-package "rpi_arm64" "aarch64-linux-gnu"))
 
-(define u-boot-rpi-4
-  (make-u-boot-package "rpi_4" "aarch64-linux-gnu"))
-
-(define install-rpi-4-u-boot
+(define install-rpi-arm64-u-boot
   #~(lambda (bootloader root-index image)
       #t))
 
-(define u-boot-rpi-4-bootloader
+(define u-boot-rpi-arm64-bootloader
   (bootloader
    (inherit u-boot-bootloader)
-   (package u-boot-rpi-4)
-   (disk-image-installer install-rpi-4-u-boot)))
+   (package u-boot-rpi-arm64)
+   (disk-image-installer install-rpi-arm64-u-boot)))
 
 (define raspberry-pi-barebones-os
   (operating-system
@@ -70,7 +69,7 @@ load the Grub bootloader located in the 'Guix_image' root partition."
    (timezone "Europe/Paris")
    (locale "en_US.utf8")
    (bootloader (bootloader-configuration
-		(bootloader  u-boot-rpi-4-bootloader)
+		(bootloader  u-boot-rpi-arm64-bootloader)
 		(targets '("/dev/vda"))))
    (initrd-modules '())
    (kernel linux-raspberry-5.10)
@@ -86,13 +85,16 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                            (type "ext4")))
                          %base-file-systems))
    (services %base-services)
+   (packages %base-packages)
    (users (cons (user-account
                  (name "pi")
                  (comment "raspberrypi user")
                  (password (crypt "123" "123$456"))
                  (group "users")
                  (supplementary-groups '("wheel")))
-                %base-user-accounts))))
+                %base-user-accounts))
+   ;;(kernel-loadable-modules %reterminal-kernel-modules)
+   ))
 
 (define rpi-boot-partition
   (partition
@@ -103,16 +105,16 @@ load the Grub bootloader located in the 'Guix_image' root partition."
    (initializer (gexp (lambda* (root #:key
                                  grub-efi
                                  #:allow-other-keys)
-                                 (use-modules (guix build utils))
-                                 (mkdir-p root)
-                                (copy-recursively #$(file-append u-boot-rpi-4 "/libexec/u-boot.bin" )
-                                (string-append root "/u-boot.bin"))
-                                (copy-recursively #$(file-append raspberrypi-firmware "/" ) root)
-                                (copy-recursively #$(local-file "config.txt")
-                                (string-append root "/config.txt"))
-                                (copy-recursively #$(local-file "cmdline.txt")
-                                (string-append root "/cmdline.txt"))
-    )))))
+                               (use-modules (guix build utils))
+                               (mkdir-p root)
+                               (copy-recursively #$(file-append u-boot-rpi-arm64 "/libexec/u-boot.bin" )
+						 (string-append root "/u-boot.bin"))
+                               (copy-recursively #$(file-append raspberrypi-firmware "/" ) root)
+                               (copy-recursively #$(local-file "config.txt")
+						 (string-append root "/config.txt"))
+                               (copy-recursively #$(local-file "cmdline.txt")
+						 (string-append root "/cmdline.txt"))
+			       )))))
 
 (define rpi-root-partition
   (partition
