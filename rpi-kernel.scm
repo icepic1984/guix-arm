@@ -128,7 +128,7 @@
 									  (setenv "CROSS_COMPILE" (string-append target "-"))
 									  (format #t "`CROSS_COMPILE' set to `~a'~%"
 										  (getenv "CROSS_COMPILE"))))
-
+								      (setenv "KERNEL" "kernel8")
 								      (invoke "make" "bcm2711_defconfig")
 								      (let ((port (open-file ".config" "a"))
 									    (extra-configuration #$(config->string %default-extra-linux-options)))
