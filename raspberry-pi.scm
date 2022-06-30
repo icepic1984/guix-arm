@@ -48,7 +48,7 @@
   "Install in ESP directory the given GRUB-EFI bootloader.  Configure it to
 load the Grub bootloader located in the 'Guix_image' root partition."
   (let ((uboot-binary "/libexec/u-boot.bin"))
-    (copy-file #$(file-append (u-boot-rpi-4) uboot-binary ) "/")))
+    (copy-file #$(file-append (u-boot-rpi-arm64) uboot-binary ) "/")))
 
 (define u-boot-rpi-arm64
   (make-u-boot-package "rpi_arm64" "aarch64-linux-gnu"))
