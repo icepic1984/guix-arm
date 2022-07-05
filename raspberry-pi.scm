@@ -71,7 +71,7 @@ load the Grub bootloader located in the 'Guix_image' root partition."
    (bootloader (bootloader-configuration
 		(bootloader  u-boot-rpi-arm64-bootloader)
 		(targets '("/dev/vda"))))
-   (kernel linux-raspberry-5.15)
+   (kernel linux-raspberry-5.10)
    ;;(kernel-arguments (cons* "console=serial0,9600" "console=ttyAMA0,9600" "8250.nr_uarts=1" "kgdboc=serial0,9600" "module_blacklist=vc4"
 	 ;;		  %default-kernel-arguments))
    (initrd-modules (cons* "fuse" "8021q" "garp" "stp" "llc" "joydev" "lis331dlh_i2c" "snd_soc_hdmi_codec" "rtc_pcf8563" "als_ltr30x" "industrialio_triggered_buffer" "kfifo_buf" "industrialio" "gpio_pca953x" "pinctrl_mcp23s08_i2c" "pinctrl_mcp23s08" "regmap_i2c" "brcmfmac" "brcmutil" "vc4" "cec" "cfg80211" "v3d" "rfkill" "gpu_sched" "dwc2" "drm_kms_helper" "raspberrypi_hwmon" "roles" "bcm2835_v4l2" "bcm2835_codec" "bcm2835_isp" "i2c_brcmstb" "videobuf2_vmalloc" "bcm2835_mmal_vchiq" "v4l2_mem2mem" "videobuf2_dma_contig" "videobuf2_memops" "isp" "em2mem,bcm2835_isp" "i2c_bcm2835" "drm" "uf2_common,v4l2_mem2mem,bcm2835_isp" "drm_panel_orientation_quirks" "snd_bcm2835" "common,v4l2_mem2mem,bcm2835_isp" "vc_sm_cma" "snd_soc_core" "snd_compress" "snd_pcm_dmaengine" "soc_core,snd_pcm_dmaengine" "snd_timer" "mpress,snd_soc_core,snd_pcm" "syscopyarea" "sysfillrect" "rpivid_mem" "sysimgblt" "nvmem_rmem" "fb_sys_fops" "backlight" "uio_pdrv_genirq" "uio" "gpio_keys" "i2c_dev" "aes_neon_bs" "sha256_generic" "aes_neon_blk" "crypto_simd" "cryptd" "ip_tables" "x_tables" "ipv6" %base-initrd-modules))
