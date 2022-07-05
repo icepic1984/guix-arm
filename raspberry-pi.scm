@@ -95,7 +95,7 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                  (group "users")
                  (supplementary-groups '("wheel")))
                 %base-user-accounts))
-   ;;(kernel-loadable-modules %reterminal-kernel-modules)
+   (kernel-loadable-modules %reterminal-kernel-modules)
    ))
 
 (define rpi-boot-partition
