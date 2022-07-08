@@ -74,7 +74,18 @@ load the Grub bootloader located in the 'Guix_image' root partition."
    (kernel linux-raspberry-5.10)
    (kernel-arguments (cons* "console=serial0,115200" "console=ttyAMA0,115200" "8250.nr_uarts=1" "kgdboc=serial0,115200"
 	 		  %default-kernel-arguments))
-   (initrd-modules '("fuse" "8021q" "garp" "stp" "llc" "joydev" "snd_soc_hdmi_codec" "rtc_pcf8563" "industrialio_triggered_buffer" "kfifo_buf" "industrialio" "gpio_pca953x" "pinctrl_mcp23s08" "regmap_i2c" "brcmfmac" "brcmutil" "vc4" "cec" "cfg80211" "v3d" "rfkill" "gpu_sched" "dwc2" "drm_kms_helper" "raspberrypi_hwmon" "roles" "bcm2835_v4l2" "bcm2835_codec" "bcm2835_isp" "i2c_brcmstb" "videobuf2_vmalloc" "bcm2835_mmal_vchiq" "v4l2_mem2mem" "videobuf2_dma_contig" "videobuf2_memops""i2c_bcm2835" "drm" "drm_panel_orientation_quirks" "snd_bcm2835" "vc_sm_cma" "snd_soc_core" "snd_compress" "snd_pcm_dmaengine" "snd_timer" "syscopyarea" "sysfillrect" "rpivid_mem" "sysimgblt" "nvmem_rmem" "fb_sys_fops" "backlight" "uio_pdrv_genirq" "uio" "gpio_keys" "i2c_dev" "aes_neon_bs" "aes_neon_blk" "crypto_simd" "cryptd" "ip_tables" "x_tables" "ipv6" "ahci"))
+   (initrd-modules '("8021q" "aes_neon_blk" "aes_neon_bs" "ahci" "backlight" "bcm2835_codec"
+                      "bcm2835_isp" "bcm2835_mmal_vchiq" "bcm2835_v4l2" "brcmfmac" "brcmutil"
+                      "cec" "cfg80211" "cryptd" "crypto_simd" "drm" "drm_kms_helper"
+                      "drm_panel_orientation_quirks" "dwc2" "fb_sys_fops" "fuse" "garp"
+                      "gpio_keys" "gpio_pca953x" "gpu_sched" "i2c_brcmstb" "i2c_dev" "industrialio"
+                      "industrialio_triggered_buffer" "ip_tables" "ipv6" "joydev" "kfifo_buf" "llc"
+                      "nvmem_rmem" "pinctrl_mcp23s08" "raspberrypi_hwmon" "regmap_i2c" "rfkill"
+                      "roles" "rpivid_mem" "rtc_pcf8563" "snd_bcm2835" "snd_compress"
+                      "snd_pcm_dmaengine" "snd_soc_core" "snd_soc_hdmi_codec" "snd_timer" "stp"
+                      "syscopyarea" "sysfillrect" "sysimgblt" "uio" "uio_pdrv_genirq" "v3d"
+                      "v4l2_mem2mem" "vc4" "vc_sm_cma" "videobuf2_dma_contig" "videobuf2_memops"
+                      "i2c_bcm2835" "videobuf2_vmalloc" "x_tables"))
    (firmware (list raspberrypi-firmware))
    (file-systems (append (list 
                           (file-system
