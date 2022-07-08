@@ -74,7 +74,8 @@ load the Grub bootloader located in the 'Guix_image' root partition."
    (kernel linux-raspberry-5.10)
    (kernel-arguments (cons* "console=serial0,115200" "console=ttyAMA0,115200" "8250.nr_uarts=1" "kgdboc=serial0,115200"
 	 		  %default-kernel-arguments))
-   (initrd-modules '("8021q" "aes_neon_blk" "aes_neon_bs" "ahci" "backlight" "bcm2835_codec"
+   (initrd-modules '( ; Modules bellow were found on CM4
+                      "8021q" "aes_neon_blk" "aes_neon_bs" "ahci" "backlight" "bcm2835_codec"
                       "bcm2835_isp" "bcm2835_mmal_vchiq" "bcm2835_v4l2" "brcmfmac" "brcmutil"
                       "cec" "cfg80211" "cryptd" "crypto_simd" "drm" "drm_kms_helper"
                       "drm_panel_orientation_quirks" "dwc2" "fb_sys_fops" "fuse" "garp"
@@ -85,7 +86,14 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                       "snd_pcm_dmaengine" "snd_soc_core" "snd_soc_hdmi_codec" "snd_timer" "stp"
                       "syscopyarea" "sysfillrect" "sysimgblt" "uio" "uio_pdrv_genirq" "v3d"
                       "v4l2_mem2mem" "vc4" "vc_sm_cma" "videobuf2_dma_contig" "videobuf2_memops"
-                      "i2c_bcm2835" "videobuf2_vmalloc" "x_tables"))
+                      "i2c_bcm2835" "videobuf2_vmalloc" "x_tables"
+                      ; Modules bellow were found on RPI3b+
+                      "cmac" "bnep" "hci_uart" "btbcm" "bluetooth" "ecdh_generic" "ecc"
+                      "sha256_generic" "videobuf2_v4l2" "videobuf2_common" "snd"
+                      "videodev" "mc" "fixed"
+                      ; Modules bellow are attempts found nowhere
+                      "mmcblk" "dwc_otg" "sdhci" "mmc-bcm2835" "uart-pl011" "mmc_spi"
+                      ))
    (firmware (list raspberrypi-firmware))
    (file-systems (append (list 
                           (file-system
