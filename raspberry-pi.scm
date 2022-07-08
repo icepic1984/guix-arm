@@ -71,7 +71,7 @@ load the Grub bootloader located in the 'Guix_image' root partition."
    (bootloader (bootloader-configuration
 		(bootloader  u-boot-rpi-arm64-bootloader)
 		(targets '("/dev/vda"))))
-   (kernel linux-raspberry-5.10)
+   (kernel linux-raspberry-5.15)
    (kernel-arguments (cons* "console=serial0,115200" "console=ttyAMA0,115200" "8250.nr_uarts=1" "kgdboc=serial0,115200"
 	 		  %default-kernel-arguments))
    (initrd-modules '( ; Modules bellow were found on CM4
