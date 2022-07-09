@@ -72,8 +72,8 @@ load the Grub bootloader located in the 'Guix_image' root partition."
 		(bootloader  u-boot-rpi-arm64-bootloader)
 		(targets '("/dev/vda"))))
    (kernel linux-raspberry-5.15)
-   (kernel-arguments (cons* "console=serial0,115200" "console=ttyAMA0,115200" "8250.nr_uarts=1" "kgdboc=serial0,115200"
-	 		  %default-kernel-arguments))
+   ;(kernel-arguments (cons* "console=serial0,115200" "console=ttyAMA0,115200" "8250.nr_uarts=1" "kgdboc=serial0,115200"
+	 ;		  %default-kernel-arguments))
    (initrd-modules '( ; Modules bellow were found on CM4
                       "8021q" "aes_neon_blk" "aes_neon_bs" "ahci" "backlight" "bcm2835_codec"
                       "bcm2835_isp" "bcm2835_mmal_vchiq" "bcm2835_v4l2" "brcmfmac" "brcmutil"
