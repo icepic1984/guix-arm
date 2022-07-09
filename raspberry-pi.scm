@@ -94,7 +94,7 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                       ; Modules bellow are attempts found nowhere
                       "mmc_spi" "of_mmc_spi"
                       "mtd" "mtd_blkdevs" "mtdblock" "spi-nor" "bcm2835-isp" "snd-bcm2835"
-                      "vc-sm-cma" "bcm2835-codec" "bcm2835-v4l2" "pcie-brcmstb"
+                      "vc-sm-cma" "bcm2835-codec" "bcm2835-v4l2"
                       ))
    (firmware (list raspberrypi-firmware))
    (file-systems (append (list 
