@@ -89,8 +89,8 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                       "i2c_bcm2835" "videobuf2_vmalloc" "x_tables"
                       ; Modules bellow were found on RPI3b+
                       "cmac" "bnep" "hci_uart" "btbcm" "bluetooth" "ecdh_generic" "ecc"
-                      "videobuf2_v4l2" "videobuf2_common" "snd"
-                      "videodev" "mc"
+                      "videobuf2_v4l2" "videobuf2_common" "snd" "af_alg" "brcmutil"
+                      "videodev" "mc" "algif_hash" "aes_arm64" "algif_skcipher"
                       ; Modules bellow are attempts found nowhere
                       "sdhci" "mmc-bcm2835" "uart-pl011" "mmc_spi" "of_mmc_spi"
                       "mtd" "mtd_blkdevs" "mtdblock" "spi-nor" "bcm2835-isp" "snd-bcm2835"
