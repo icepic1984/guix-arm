@@ -87,7 +87,6 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                       "syscopyarea" "sysfillrect" "sysimgblt" "uio" "uio_pdrv_genirq" "v3d"
                       "v4l2_mem2mem" "vc4" "vc_sm_cma" "videobuf2_dma_contig" "videobuf2_memops"
                       "i2c_bcm2835" "videobuf2_vmalloc" "x_tables"
-                      "sdhci" "sdhci-pltfm"
                       ; Modules bellow were found on RPI3b+
                       "cmac" "bnep" "hci_uart" "btbcm" "bluetooth" "ecdh_generic" "ecc"
                       "videobuf2_v4l2" "videobuf2_common" "snd" "af_alg" "brcmutil"
@@ -96,8 +95,6 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                       "mmc_spi" "of_mmc_spi"
                       "mtd" "mtd_blkdevs" "mtdblock" "spi-nor" "bcm2835-isp" "snd-bcm2835"
                       "vc-sm-cma" "bcm2835-codec" "bcm2835-v4l2"
-                      ; Crazy me
-                      "sdhci-iproc" "simple-pm-bus"
                       ))
    (firmware (list raspberrypi-firmware))
    (file-systems (append (list 
