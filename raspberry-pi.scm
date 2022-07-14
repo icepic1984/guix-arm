@@ -72,8 +72,6 @@ load the Grub bootloader located in the 'Guix_image' root partition."
 		(bootloader  u-boot-rpi-arm64-bootloader)
 		(targets '("/dev/vda"))))
    (kernel linux-raspberry-5.15)
-   ;(kernel-arguments (cons* "console=serial0,115200" "console=ttyAMA0,115200" "8250.nr_uarts=1" "kgdboc=serial0,115200"
-	 ;		  %default-kernel-arguments))
    (initrd-modules '())
    (firmware (list raspberrypi-firmware))
    (file-systems (append (list 
@@ -95,7 +93,7 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                  (group "users")
                  (supplementary-groups '("wheel")))
                 %base-user-accounts))
-   (kernel-loadable-modules %reterminal-kernel-modules)
+   ;;(kernel-loadable-modules %reterminal-kernel-modules)
    ))
 
 (define rpi-boot-partition
