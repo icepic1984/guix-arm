@@ -74,28 +74,7 @@ load the Grub bootloader located in the 'Guix_image' root partition."
    (kernel linux-raspberry-5.15)
    ;(kernel-arguments (cons* "console=serial0,115200" "console=ttyAMA0,115200" "8250.nr_uarts=1" "kgdboc=serial0,115200"
 	 ;		  %default-kernel-arguments))
-   (initrd-modules '( ; Modules bellow were found on CM4
-                      "8021q" "aes_neon_blk" "aes_neon_bs" "ahci" "backlight" "bcm2835_codec"
-                      "bcm2835_isp" "bcm2835_mmal_vchiq" "bcm2835_v4l2" "brcmfmac" "brcmutil"
-                      "cec" "cfg80211" "cryptd" "crypto_simd" "drm" "drm_kms_helper"
-                      "drm_panel_orientation_quirks" "dwc2" "fb_sys_fops" "fuse" "garp"
-                      "gpio_keys" "gpio_pca953x" "gpu_sched" "i2c_brcmstb" "i2c_dev" "industrialio"
-                      "industrialio_triggered_buffer" "ip_tables" "ipv6" "joydev" "kfifo_buf" "llc"
-                      "nvmem_rmem" "pinctrl_mcp23s08" "raspberrypi_hwmon" "regmap_i2c" "rfkill"
-                      "roles" "rpivid_mem" "rtc_pcf8563" "snd_bcm2835" "snd_compress"
-                      "snd_pcm_dmaengine" "snd_soc_core" "snd_soc_hdmi_codec" "snd_timer" "stp"
-                      "syscopyarea" "sysfillrect" "sysimgblt" "uio" "uio_pdrv_genirq" "v3d"
-                      "v4l2_mem2mem" "vc4" "vc_sm_cma" "videobuf2_dma_contig" "videobuf2_memops"
-                      "i2c_bcm2835" "videobuf2_vmalloc" "x_tables"
-                      ; Modules bellow were found on RPI3b+
-                      "cmac" "bnep" "hci_uart" "btbcm" "bluetooth" "ecdh_generic" "ecc"
-                      "videobuf2_v4l2" "videobuf2_common" "snd" "af_alg" "brcmutil"
-                      "videodev" "mc" "algif_hash" "aes_arm64" "algif_skcipher"
-                      ; Modules bellow are attempts found nowhere
-                      "mmc_spi" "of_mmc_spi"
-                      "mtd" "mtd_blkdevs" "mtdblock" "spi-nor" "bcm2835-isp" "snd-bcm2835"
-                      "vc-sm-cma" "bcm2835-codec" "bcm2835-v4l2"
-                      ))
+   (initrd-modules '())
    (firmware (list raspberrypi-firmware))
    (file-systems (append (list 
                           (file-system
