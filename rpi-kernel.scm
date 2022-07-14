@@ -76,11 +76,11 @@
     ("CONFIG_CIFS" . m)
     ("CONFIG_9P_FS" . m)))
 
-(define-public linux-raspberry-5.10
+(define-public linux-raspberry-5.15
   (package
-   (inherit linux-libre-5.10)
+   (inherit linux-libre-5.15)
    (name "linux-raspberry")
-   (version "5.10")
+   (version "5.15.32")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -91,7 +91,7 @@
              (base32
               "1k18cwnsqdy5ckymy92kp8czckzwgn8wn2zdibzrrg9jxrflx6vl"))))
    (arguments
-    (substitute-keyword-arguments (package-arguments linux-libre-5.10)
+    (substitute-keyword-arguments (package-arguments linux-libre-5.15)
 				  ((#:phases phases)
 				   #~(modify-phases #$phases
 

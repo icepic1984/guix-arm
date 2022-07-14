@@ -22,7 +22,7 @@
     )
    (build-system linux-module-build-system)
    (arguments
-    (list #:tests? #f #:linux linux-raspberry-5.10))                ; no test suite, RPI Linux
+    (list #:tests? #f #:linux linux-raspberry-5.15))                ; no test suite, RPI Linux
    (home-page "https://github.com/Seeed-Studio/seeed-linux-dtoverlays/tree/master/modules/bq24179_charger")
    (synopsis "Linux kernel module for bq24179_charger found in Seed Studio ReTerminal")
    (description
@@ -46,7 +46,7 @@
     )
    (build-system linux-module-build-system)
    (arguments
-    (list #:tests? #f #:linux linux-raspberry-5.10))                ; no test suite, RPI Linux
+    (list #:tests? #f #:linux linux-raspberry-5.15))                ; no test suite, RPI Linux
    (home-page "https://github.com/Seeed-Studio/seeed-linux-dtoverlays/tree/master/modules/lis3lv02d")
    (synopsis "Linux kernel module for GROVE 3-Axis Digital Accelerometer found in Seed Studio ReTerminal")
    (description
@@ -70,7 +70,7 @@
     )
    (build-system linux-module-build-system)
    (arguments
-    (list #:tests? #f #:linux linux-raspberry-5.10))                ; no test suite, RPI Linux
+    (list #:tests? #f #:linux linux-raspberry-5.15))                ; no test suite, RPI Linux
    (home-page "https://github.com/Seeed-Studio/seeed-linux-dtoverlays/tree/master/modules/ltr30x")
    (synopsis "Linux kernel module for ltr30x ambient light and proximity sensor found in Seed Studio ReTerminal")
    (description
@@ -94,7 +94,7 @@
     )
    (build-system linux-module-build-system)
    (arguments
-    (list #:tests? #f #:linux linux-raspberry-5.10))                ; no test suite, RPI Linux
+    (list #:tests? #f #:linux linux-raspberry-5.15))                ; no test suite, RPI Linux
    (home-page "https://github.com/Seeed-Studio/seeed-linux-dtoverlays/tree/master/modules/mipi_dsi")
    (synopsis "Linux kernel module for MIPI-DSI panel with touch panel attached to I2C bus found in Seed Studio ReTerminal")
    (description
