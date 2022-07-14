@@ -80,7 +80,7 @@
   (package
    (inherit linux-libre-5.15)
    (name "linux-raspberry")
-   (version "5.15.30")
+   (version "5.15.32")
    (source (origin
             (method git-fetch)
             (uri (git-reference
