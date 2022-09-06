@@ -20,6 +20,8 @@
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader u-boot)
   #:use-module (gnu image)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages compression)  
   #:use-module (gnu packages linux)
   #:use-module (gnu packages image)
   #:use-module (gnu services)
@@ -27,8 +29,12 @@
   #:use-module (gnu system)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system image)
+  #:use-module (guix build-system copy)
+  #:use-module (guix download)
+  #:use-module (guix packages)
   #:use-module (guix platforms arm)
   #:use-module (srfi srfi-26)
+  #:use-module ((guix licenses) #:prefix license:)
 
   #:export (raspbery-pi-barebones-os
             raspbery-pi-image-type
@@ -42,6 +48,43 @@
 
 (include "rpi-kernel.scm")
 (include "reterminal.scm")
+
+
+(define-public brcm80211-firmware
+  (package
+    (name "brcm80211-firmware")
+    (version "20210818-1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append 
+                    "http://ftp.debian.org/debian/pool/non-free/f/firmware-nonfree/firmware-brcm80211_"
+                    version "_all.deb"))
+              (sha256 (base32 "04wg9fqay6rpg80b7s4h4g2kwq8msbh81lb3nd0jj45nnxrdxy7p"))))
+    (build-system copy-build-system)
+    (native-inputs (list tar bzip2))
+    (arguments
+      '(#:phases
+        (modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((source (assoc-ref inputs "source")))
+                (invoke "ar" "x" source)
+                (invoke "ls")
+                (invoke "tar" "-xvf" "data.tar.xz"))))
+          (add-after 'install 'make-symlinks
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (symlink (string-append out "/lib/firmware/brcm/brcmfmac43455-sdio.raspberrypi,4-model-b.txt")
+                         (string-append out "/lib/firmware/brcm/brcmfmac43455-sdio.txt"))
+                (symlink (string-append out "/lib/firmware/brcm/brcmfmac43455-sdio.bin")
+                         (string-append out "/lib/firmware/brcm/brcmfmac43455-sdio.raspberrypi,4-compute-module.bin"))))))
+        #:install-plan
+        '(("lib/firmware/" "lib/firmware"))))
+    (home-page "https://packages.debian.org/sid/firmware-brcm80211")
+    (synopsis "Binary firmware for Broadcom/Cypress 802.11 wireless cards")
+    (description "This package contains the binary firmware for wireless
+network cards supported by the brcmsmac or brcmfmac driver.")
+    (license license:expat)))
 
 
 (define (install-rpi-efi-loader grub-efi esp)
@@ -76,7 +119,7 @@ load the Grub bootloader located in the 'Guix_image' root partition."
    (kernel-arguments (cons* "cgroup_enable=memory"
                             %default-kernel-arguments))
    (initrd-modules '())
-   (firmware (list raspberrypi-firmware))
+   (firmware (list raspberrypi-firmware brcm80211-firmware))
    (file-systems (append (list 
                           (file-system
                            (device (file-system-label "BOOT"))
