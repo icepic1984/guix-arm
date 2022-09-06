@@ -70,7 +70,8 @@ load the Grub bootloader located in the 'Guix_image' root partition."
    (locale "en_US.utf8")
    (bootloader (bootloader-configuration
 		(bootloader  u-boot-rpi-arm64-bootloader)
-		(targets '("/dev/vda"))))
+		(targets '("/dev/vda"))
+    (device-tree-support? #f)))
    (kernel linux-raspberry-5.15)
    (initrd-modules '())
    (firmware (list raspberrypi-firmware))
