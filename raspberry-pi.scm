@@ -171,7 +171,7 @@ load the Grub bootloader located in the 'Guix_image' root partition."
    (initializer (gexp initialize-root-partition))))
 
 (define raspberry-pi-image
-  (image
+  (image-without-os
    (format 'disk-image)
    (partitions (list rpi-boot-partition rpi-root-partition))))
 
