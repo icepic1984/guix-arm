@@ -76,6 +76,8 @@
     ("CONFIG_CIFS" . m)
     ("CONFIG_9P_FS" . m)))
 
+;; https://guix.gnu.org/manual/en/html_node/Using-the-Configuration-System.html
+;; Build: guix system image raspberry-pi.scm --skip-checks --verbosity=3 --no-grafts
 (define-public linux-raspberry-5.15
   (package
    (inherit linux-libre-5.15)
@@ -85,54 +87,72 @@
             (method git-fetch)
             (uri (git-reference
                   (url "https://github.com/raspberrypi/linux")
-		  (commit "1.20220331")))
+		          (commit "1.20220331")))
             (file-name (string-append "linux-" version))
             (sha256
              (base32
               "1k18cwnsqdy5ckymy92kp8czckzwgn8wn2zdibzrrg9jxrflx6vl"))))
    (arguments
     (substitute-keyword-arguments (package-arguments linux-libre-5.15)
-				  ((#:phases phases)
-				   #~(modify-phases #$phases
+				                  ((#:phases phases)
+				                   #~(modify-phases #$phases
 
-						    (replace 'configure
-							     (lambda* (#:key inputs target #:allow-other-keys)
-								      ;; Avoid introducing timestamps
-								      (setenv "KCONFIG_NOTIMESTAMP" "1")
-								      (setenv "KBUILD_BUILD_TIMESTAMP" (getenv "SOURCE_DATE_EPOCH"))
+						                            (replace 'configure
+							                                 (lambda* (#:key inputs target #:allow-other-keys)
+								                               ;; Avoid introducing timestamps
+								                               (setenv "KCONFIG_NOTIMESTAMP" "1")
+								                               (setenv "KBUILD_BUILD_TIMESTAMP" (getenv "SOURCE_DATE_EPOCH"))
 
-								      ;; Other variables useful for reproducibility.
-								      (setenv "KBUILD_BUILD_USER" "guix")
-								      (setenv "KBUILD_BUILD_HOST" "guix")
+								                               ;; Other variables useful for reproducibility.
+								                               (setenv "KBUILD_BUILD_USER" "guix")
+								                               (setenv "KBUILD_BUILD_HOST" "guix")
 
-								      ;; Set ARCH and CROSS_COMPILE.
-								      (let ((arch #$(platform-linux-architecture
-										     (lookup-platform-by-target-or-system
-										      (or (%current-target-system)
-											  (%current-system))))))
-									(setenv "ARCH" arch)
-									(format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
+								                               ;; Set ARCH and CROSS_COMPILE.
+								                               (let ((arch #$(platform-linux-architecture
+										                                      (lookup-platform-by-target-or-system
+										                                       (or (%current-target-system)
+											                                       (%current-system))))))
+									                             (setenv "ARCH" arch)
+									                             (format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
 
-									(when target
-									  (setenv "C_INCLUDE_PATH" (string-join
-												    (cdr (string-split (getenv "C_INCLUDE_PATH") #\:))
-												    ":"))
+									                             ;; (when target
+                                                                 ;;   (format #t "PRE`C_INCLUDE_PATH: ~a~%"
+                                                                 ;;           (getenv "C_INCLUDE_PATH"))
+                                                                 ;;   (format #t "PRE`CPLUS_INCLUDE_PATH: ~a~%"
+                                                                 ;;           (getenv "CPLUS_INCLUDE_PATH"))
+                                                                 ;;   (format #t "PRE`LIBRARY_PATH: ~a~%"
+                                                                 ;;           (getenv "LIBRARY_PATH"))
+                                       
+									                             ;;   (format #t "`CROSS_COMPILE' set to `~a'~%"
+									                             ;;           (getenv "CROSS_COMPILE"))
+									                             ;;   (setenv "C_INCLUDE_PATH" (string-join
+									                             ;;    		                 (cdr (string-split (getenv "C_INCLUDE_PATH") #\:))
+									                             ;;    		                 ":"))
 
-									  (setenv "CPLUS_INCLUDE_PATH" (string-join
-													(cdr (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
-													":"))
+									                             ;;   (setenv "CPLUS_INCLUDE_PATH" (string-join
+									                             ;;    			                 (cdr (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+									                             ;;    			                 ":"))
 
-									  (setenv "LIBRARY_PATH" (string-join
-												  (cdr (string-split (getenv "LIBRARY_PATH") #\:))
-												  ":"))
-									  (setenv "CROSS_COMPILE" (string-append target "-"))
-									  (format #t "`CROSS_COMPILE' set to `~a'~%"
-										  (getenv "CROSS_COMPILE"))))
-								      (setenv "KERNEL" "kernel8")
-								      (invoke "make" "bcm2711_defconfig")
-								      (let ((port (open-file ".config" "a"))
-									    (extra-configuration #$(config->string %default-extra-linux-options)))
-									(display extra-configuration port)
-									(close-port port))
+									                             ;;   (setenv "LIBRARY_PATH" (string-join
+									                             ;;    		               (cdr (string-split (getenv "LIBRARY_PATH") #\:))
+									                             ;;    		               ":"))
+									                             ;;   (setenv "CROSS_COMPILE" (string-append target "-"))
+                                                                 ;;   (format #t "`C_INCLUDE_PATH: ~a~%"
+                                                                 ;;           (getenv "C_INCLUDE_PATH"))
+                                                                 ;;   (format #t "`CPLUS_INCLUDE_PATH: ~a~%"
+                                                                 ;;           (getenv "CPLUS_INCLUDE_PATH"))
+                                                                 ;;   (format #t "`LIBRARY_PATH: ~a~%"
+                                                                 ;;           (getenv "LIBRARY_PATH"))
+                                       
+									                             ;;   (format #t "`CROSS_COMPILE' set to `~a'~%"
+									                             ;;           (getenv "CROSS_COMPILE")))
+                                                                 )
+                                      
+								                               (setenv "KERNEL" "kernel8")
+								                               (invoke "make" "bcm2711_defconfig")
+								                               (let ((port (open-file ".config" "a"))
+									                                 (extra-configuration #$(config->string %default-extra-linux-options)))
+									                             (display extra-configuration port)
+									                             (close-port port))
 
-								      ))))))))
+								                               ))))))))

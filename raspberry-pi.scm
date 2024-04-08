@@ -1,20 +1,19 @@
-;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;;
-;;; This file is part of GNU Guix.
-;;;
-;;; GNU Guix is free software; you can redistribute it and/or modify it
-;;; under the terms of the GNU General Public License as published by
-;;; the Free Software Foundation; either version 3 of the License, or (at
-;;; your option) any later version.
-;;;
-;;; GNU Guix is distributed in the hope that it will be useful, but
-;;; WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
+
+;; Guix deploy tut
+;;  https://stumbles.id.au/getting-started-with-guix-deploy.htmlw
+
+;; Build
+;; guix system image raspberry-pi.scm --skip-checks --verbosity=3 --no-grafts -e raspberry-pi-barebones-raw-image
+;; guix deploy --system=aarch64-linux --no-grafts raspberry-pi.scm
+;; Bugs
+; https://issues.guix.gnu.org/66866
+; https://lists.gnu.org/archive/html/guix-devel/2019-11/msg00407.html
+
+;; Tuts
+;; Goos blog with information how to change packages
+;; https://www.futurile.net/2024/01/12/modifying-guix-packages-using-inheritance/
+;; Wsl support
+;; https://issues.guix.gnu.org/53912
 
 (define-module (gnu system images raspberry-pi)
   #:use-module (gnu bootloader)
@@ -42,12 +41,16 @@
 
 (use-modules (gnu)
              (gnu bootloader u-boot))
-(use-package-modules bootloaders screen ssh)
+(use-package-modules bootloaders networking screen ssh)
+(use-service-modules networking ssh)
 (use-modules (nongnu packages linux))
 (use-modules (guix gexp))
+(use-modules (gnu machine))
+(use-modules (gnu machine ssh))
 
-(include "rpi-kernel.scm")
-(include "reterminal.scm")
+
+(include "/home/icepic/guix/raspberry/rpi-kernel.scm")
+;(include "/home/icepic/guix/raspberry/reterminal.scm")
 
 
 (define-public brcm80211-firmware
@@ -108,19 +111,19 @@ load the Grub bootloader located in the 'Guix_image' root partition."
 
 (define raspberry-pi-barebones-os
   (operating-system
-   (host-name "viso")
-   (timezone "Europe/Paris")
+   (host-name "pi4")
+   (timezone "Europe/Berlin")
    (locale "en_US.utf8")
    (bootloader (bootloader-configuration
-		(bootloader  u-boot-rpi-arm64-bootloader)
-		(targets '("/dev/vda"))
-    (device-tree-support? #f)))
+                (bootloader u-boot-rpi-arm64-bootloader)
+                (targets '("/dev/vda"))
+                (device-tree-support? #f)))
    (kernel linux-raspberry-5.15)
    (kernel-arguments (cons* "cgroup_enable=memory"
                             %default-kernel-arguments))
    (initrd-modules '())
    (firmware (list raspberrypi-firmware brcm80211-firmware))
-   (file-systems (append (list 
+   (file-systems (append (list
                           (file-system
                            (device (file-system-label "BOOT"))
                            (mount-point "/boot/firmware")
@@ -130,17 +133,42 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                            (mount-point "/")
                            (type "ext4")))
                          %base-file-systems))
-   (services %base-services)
    (packages %base-packages)
-   (users (cons (user-account
-                 (name "pi")
-                 (comment "raspberrypi user")
-                 (password (crypt "123" "123$456"))
-                 (group "users")
-                 (supplementary-groups '("wheel")))
-                %base-user-accounts))
+   (users (append (list (user-account
+                         (name "icepic")
+                         (comment "Me myself and i")
+                         (group "users")
+                         (password "$6$felix$Z1mRpNsE85mqUw8MOilWyfw61Z4mLK97jMI88TMrXWHFAItb6B97vBDKWgJws0YZiCIPzJ.Xudrh4E3h9BVhg.")
+                         (supplementary-groups '("wheel")))
+                        (user-account
+                         (name "root")
+                         (password "$6$felix$Z1mRpNsE85mqUw8MOilWyfw61Z4mLK97jMI88TMrXWHFAItb6B97vBDKWgJws0YZiCIPzJ.Xudrh4E3h9BVhg.")
+                         (uid 0)
+                         (group "root")
+                         (comment "System administrator")
+                         (home-directory "/root")))
+                  %base-user-accounts))
+   
    ;;(kernel-loadable-modules %reterminal-kernel-modules)
-   ))
+   (services (append (list (service dhcp-client-service-type)
+                           (service openssh-service-type
+                                    (openssh-configuration
+                                     (openssh openssh-sans-x)
+                                     (password-authentication? #f)
+                                     (permit-root-login 'prohibit-password)
+                                     (authorized-keys `(("icepic" ,(local-file "icepic_rsa.pub"))
+                                                        ("root" ,(local-file "icepic_rsa.pub"))))
+                                     (port-number 2222))))
+                     (modify-services %base-services
+                                      ;; The server must trust the Guix packages you build. If you add the signing-key
+                                      ;; manually it will be overridden on next `guix deploy` giving
+                                      ;; "error: unauthorized public key". This automatically adds the signing-key.
+                                      (guix-service-type config =>
+                                                         (guix-configuration
+                                                          (inherit config)
+                                                          (authorized-keys
+                                                           (append (list (local-file "/etc/guix/signing-key.pub"))
+                                                                   %default-authorized-guix-keys)))))))))
 
 (define rpi-boot-partition
   (partition
@@ -188,5 +216,19 @@ load the Grub bootloader located in the 'Guix_image' root partition."
    (partition-table-type 'mbr)
    (name 'raspberry-pi-barebones-raw-image)))
 
+
+(define machines
+  (list (machine
+         (operating-system raspberry-pi-barebones-os)
+         (environment managed-host-environment-type)
+         (configuration (machine-ssh-configuration
+                         (host-name "pi4")
+                         (system "aarch64-linux")
+                         (user "root")
+                         (build-locally? #t)
+                         (port 2222))))))
+
+machines
+
 ;; Return the default image.
-raspberry-pi-barebones-raw-image
+;; raspberry-pi-barebones-raw-image        
