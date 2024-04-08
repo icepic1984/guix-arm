@@ -9,11 +9,18 @@
 ; https://issues.guix.gnu.org/66866
 ; https://lists.gnu.org/archive/html/guix-devel/2019-11/msg00407.html
 
-;; Tuts
-;; Goos blog with information how to change packages
+;; Remote deploy from x86 to aarch64 needs binfmt on host. Could not
+;; get it to run with wsl-guix or guix on foreign distribution on
+;; wsl2. The only option that seems to work is to start the daemon
+;; with `--disable-chroot`. However after this deployment will fail with
+;; `guix deploy: error: failed to deploy pi4: missing modules for #<file-system-label "RASPIROOT">: uio_pdrv_genirq`
+
+;; https://www.mail-archive.com/search?l=help-guix@gnu.org&q=subject:%22Re%5C%3A+Guix+deploy+fails+claiming+some+module+missing%22&o=newest&f=1
+
+;; Tuts Goos blog with information how to change
+;; packages
 ;; https://www.futurile.net/2024/01/12/modifying-guix-packages-using-inheritance/
-;; Wsl support
-;; https://issues.guix.gnu.org/53912
+;; Wsl support https://issues.guix.gnu.org/53912
 
 (define-module (gnu system images raspberry-pi)
   #:use-module (gnu bootloader)
@@ -47,6 +54,7 @@
 (use-modules (guix gexp))
 (use-modules (gnu machine))
 (use-modules (gnu machine ssh))
+
 
 
 (include "/home/icepic/guix/raspberry/rpi-kernel.scm")
@@ -121,7 +129,7 @@ load the Grub bootloader located in the 'Guix_image' root partition."
    (kernel linux-raspberry-5.15)
    (kernel-arguments (cons* "cgroup_enable=memory"
                             %default-kernel-arguments))
-   (initrd-modules '())
+   (initrd-modules '("uio_pdrv_genirq"))
    (firmware (list raspberrypi-firmware brcm80211-firmware))
    (file-systems (append (list
                           (file-system
@@ -138,8 +146,8 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                          (name "icepic")
                          (comment "Me myself and i")
                          (group "users")
-                         (password "$6$felix$Z1mRpNsE85mqUw8MOilWyfw61Z4mLK97jMI88TMrXWHFAItb6B97vBDKWgJws0YZiCIPzJ.Xudrh4E3h9BVhg.")
-                         (supplementary-groups '("wheel")))
+                         (password "$6$felix$Z1mRpNsE85mqUw8MOilWyfw61Z4mLK97jMI88TMrXWHFAItb6B97vBDKWgJws0YZiCIPzJ.Xudrh4E3h9BVhg.") ;
+                         (supplementary-groups '("wheel"))) ;
                         (user-account
                          (name "root")
                          (password "$6$felix$Z1mRpNsE85mqUw8MOilWyfw61Z4mLK97jMI88TMrXWHFAItb6B97vBDKWgJws0YZiCIPzJ.Xudrh4E3h9BVhg.")
