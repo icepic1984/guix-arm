@@ -22,6 +22,8 @@
 ;; https://www.futurile.net/2024/01/12/modifying-guix-packages-using-inheritance/
 ;; Wsl support https://issues.guix.gnu.org/53912
 
+;; Tutorial of guix system api
+;; https://othacehe.org/the-guix-system-image-api.html
 (define-module (gnu system images raspberry-pi)
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader u-boot)
@@ -41,6 +43,8 @@
   #:use-module (guix platforms arm)
   #:use-module (srfi srfi-26)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages admin)
+  #:use-module (gnu packages version-control)
 
   #:export (raspbery-pi-barebones-os
             raspbery-pi-image-type
@@ -141,7 +145,7 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                            (mount-point "/")
                            (type "ext4")))
                          %base-file-systems))
-   (packages %base-packages)
+   (packages (cons* htop git %base-packages))
    (users (append (list (user-account
                          (name "icepic")
                          (comment "Me myself and i")
@@ -225,6 +229,7 @@ load the Grub bootloader located in the 'Guix_image' root partition."
    (name 'raspberry-pi-barebones-raw-image)))
 
 
+
 (define machines
   (list (machine
          (operating-system raspberry-pi-barebones-os)
@@ -236,7 +241,8 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                          (build-locally? #t)
                          (port 2222))))))
 
-machines
+;; machines
+
 
 ;; Return the default image.
-;; raspberry-pi-barebones-raw-image        
+raspberry-pi-barebones-raw-image        
