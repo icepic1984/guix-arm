@@ -1,0 +1,22 @@
+* Random notes
+** Resize partion on boot
+  + https://issues.guix.gnu.org/69090
+** Deployment
+ + https://stumbles.id.au/getting-started-with-guix-deploy.htmlw
+ + Remote deploy from x86 to aarch64 needs binfmt on host. Could not
+   get it to run with wsl-guix or guix on foreign distribution on
+   wsl2. The only option that seems to work is to start the daemon
+   with `--disable-chroot`. However after this deployment will fail
+   with `guix deploy: error: failed to deploy pi4: missing modules for
+   #<file-system-label "RASPIROOT">: uio_pdrv_genirq`. Workaround is
+   described [[https://www.mail-archive.com/search?l=help-guix@gnu.org&q=subject:%22Re%5C%3A+Guix+deploy+fails+claiming+some+module+missing%22&o=newest&f=1][here]].
+** Tutorial for guix system api
+  + https://othacehe.org/the-guix-system-image-api.html
+* Commandline
+#+begin_src sh
+  # Generate rasp image Use no graft to prevent hitting
+  # cross-compiliation bug). See https://issues.guix.gnu.org/66866
+  guix system image raspberry-pi.scm --skip-checks --verbosity=3 --no-grafts -e raspberry-pi-barebones-raw-image
+
+  # Deploy guix image
+#+end_src
