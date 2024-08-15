@@ -21,8 +21,15 @@
 (use-modules (guix build-system trivial))
 (use-modules (guix platform))
 (use-modules (ice-9 match))
-(use-modules (nonguix licenses))
+(use-modules (nonguix licenses))        ;
 
+(define (make-local-defconfig uri sha256-as-base32)
+  (origin (method url-fetch)
+          (uri uri)
+          (sha256 (base32 sha256-as-base32))))
+
+(define touchscreen-defconfig
+  (local-file "/home/icepic/guix/raspberry/touchscreen/defconfig-touchscreen"))
 
 ;; https://guix.gnu.org/manual/en/html_node/Using-the-Configuration-System.html
 ;; Build: guix system image raspberry-pi.scm --skip-checks --verbosity=3 --no-grafts
@@ -54,7 +61,7 @@
    ;;  							                               ;; Other variables useful for reproducibility.
    ;;  							                               (setenv "KBUILD_BUILD_USER" "guix")
    ;;  							                               (setenv "KBUILD_BUILD_HOST" "guix")
-
+   ;; 
    ;;  							                               ;; Set ARCH and CROSS_COMPILE.
    ;;  							                               (let ((arch nil (platform-linux-architecture
    ;;                                                                              (lookup-platform-by-target-or-system
@@ -72,4 +79,8 @@
    ;;  							                               ))))))
    ))
 
-linux-touchscreen-6.11-rc3
+(customize-linux  #:name "bla" #:linux linux-touchscreen-6.11-rc3
+                  #:defconfig touchscreen-defconfig)
+
+bla
+
