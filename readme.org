@@ -12,6 +12,7 @@
    described [[https://www.mail-archive.com/search?l=help-guix@gnu.org&q=subject:%22Re%5C%3A+Guix+deploy+fails+claiming+some+module+missing%22&o=newest&f=1][here]].
 ** Tutorial for guix system api
   + https://othacehe.org/the-guix-system-image-api.html
+  + [[https://github.com/pjotrp/guix-notes/blob/master/HACKING.org#in-progress-using-guile-in-emacs-geiser][Hacking guix]]
 * Commandline
 #+begin_src sh
   # Generate rasp image Use no graft to prevent hitting
