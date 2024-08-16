@@ -13,6 +13,7 @@
 ** Tutorial for guix system api
   + https://othacehe.org/the-guix-system-image-api.html
   + [[https://github.com/pjotrp/guix-notes/blob/master/HACKING.org#in-progress-using-guile-in-emacs-geiser][Hacking guix]]
+  + https://www.futurile.net/2023/12/05/guix-package-transformations/
 * Commandline
 #+begin_src sh
   # Generate rasp image Use no graft to prevent hitting
