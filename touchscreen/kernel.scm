@@ -5,7 +5,7 @@
 (use-modules (gnu))
 (use-modules (gnu packages linux))
 (use-modules (gnu system))
-
+(use-modules (gnu packages tls))
 (use-modules (gnu))
 (use-modules (gnu packages))
 (use-modules (gnu packages base))
@@ -13,7 +13,6 @@
 (use-modules (gnu packages linux))
 (use-modules (guix gexp))
 (use-modules (guix profiles))
-(use-modules (guix licenses))
 (use-modules (guix packages))
 (use-modules (guix utils))
 (use-modules (guix download))
@@ -53,10 +52,14 @@
 (define u-boot-touchscreen-arm
   (make-u-boot-package "touchscreen" "arm-linux-gnueabihf"))
 
+
+(define ub (make-u-boot-package "touchscreen" "arm-linux-gnueabihf"))
+
 (define-public u-boot-touchscreen-arm
   (package
-    (inherit (make-u-boot-package "touchscreen" "arm-linux-gnueabihf"))
+    (inherit ub)
     (version "2024.01")
+    (native-inputs (cons openssl (package-native-inputs ub)))
     (source (origin
               (patches '("0001-Add-board-description-for-touchscreen.patch"))
               (method url-fetch)
