@@ -29,39 +29,25 @@
 (use-modules (gnu bootloader u-boot))
 (use-modules (guix transformations))
 
-;; (define transform
-;;   ;; The package transformation procedure.
-;;   (options->transformation
-;;    '((with-patch . "u-boot-touchscreen-arm=/home/icepic/guix/raspberry/touchscreen/0001-Add-board-description-for-touchscreen.patch"))))
-
-
-;; (packages->manifest (list u-boot-touchscreen-arm))
-
-;; (packages->manifest
-;;  (list (transform (specification->package "guix"))))
-
-;; (packages->manifest
-;;  (list (transform (specification->package "guix"))))
-
 (define touchscreen-defconfig
   (local-file "/home/icepic/guix/raspberry/touchscreen/defconfig-touchscreen"))
 
 (define patch-dtb
   (local-file "/home/icepic/guix/raspberry/touchscreen/0001-Add-device-tree-for-touchscreen-board.patch"))
 
-(define u-boot-touchscreen-arm
-  (make-u-boot-package "touchscreen" "arm-linux-gnueabihf"))
-
-
 (define ub (make-u-boot-package "touchscreen" "arm-linux-gnueabihf"))
+
+(define %u-boot-allow-disabling-openssl-patch (@@ (gnu packages bootloaders) %u-boot-allow-disabling-openssl-patch))
+(define %u-boot-build-without-libcrypto-patch (@@ (gnu packages bootloaders) %u-boot-build-without-libcrypto-patch))
 
 (define-public u-boot-touchscreen-arm
   (package
     (inherit ub)
     (version "2024.01")
-    (native-inputs (cons openssl (package-native-inputs ub)))
     (source (origin
-              (patches '("0001-Add-board-description-for-touchscreen.patch"))
+              (patches (list "0001-Add-board-description-for-touchscreen.patch"
+                             %u-boot-build-without-libcrypto-patch
+                             %u-boot-allow-disabling-openssl-patch))
               (method url-fetch)
               (uri (string-append
                     "https://ftp.denx.de/pub/u-boot/"
@@ -69,7 +55,7 @@
               (sha256
                (base32
                 "1czmpszalc6b8cj9j7q6cxcy19lnijv3916w3dag6yr3xpqi35mr"))))))
-
+;; 
 (define-public linux-touchscreen-6.1
   (package
     (inherit
