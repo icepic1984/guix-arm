@@ -2,6 +2,8 @@
 
 ;; # guix build -f kernel.scm --targets=arm-linux-gnueabihf -v3 -c2 -M2
 
+;; Algorithm to search ftd file from kernel folder
+;; ;; https://patchwork.ozlabs.org/project/uboot/patch/1390506927-15687-1-git-send-email-swarren@wwwdotorg.org/
 (define-module (gnu system images touchscreen)
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader u-boot)

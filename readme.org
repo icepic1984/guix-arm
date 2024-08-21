@@ -14,11 +14,27 @@
   + https://othacehe.org/the-guix-system-image-api.html
   + [[https://github.com/pjotrp/guix-notes/blob/master/HACKING.org#in-progress-using-guile-in-emacs-geiser][Hacking guix]]
   + https://www.futurile.net/2023/12/05/guix-package-transformations/
+  + [[https://patchwork.ozlabs.org/project/uboot/patch/1390506927-15687-1-git-send-email-swarren@wwwdotorg.org/][Desc algo to search fdt file from kernel folder]]
 * Commandline
-#+begin_src sh
-  # Generate rasp image Use no graft to prevent hitting
-  # cross-compiliation bug). See https://issues.guix.gnu.org/66866
-  guix system image raspberry-pi.scm --skip-checks --verbosity=3 --no-grafts -e raspberry-pi-barebones-raw-image
+ + Build rpi image
+  #+begin_src sh
+    # Generate rasp image Use no graft to prevent hitting
+    # cross-compiliation bug). See https://issues.guix.gnu.org/66866
+    guix system image raspberry-pi.scm --skip-checks --verbosity=3 --no-grafts -e raspberry-pi-barebones-raw-image
+    # Deploy guix image
+  #+end_src
+ + Build touscreen image
+ #+begin_src sh
+   guix system image  kernel.scm --target=arm-linux-gnueabihf -v3 -c2 -M2 -K --no-grafts
+ #+end_src
+ + Mount disk image to loop back
+ #+begin_src sh
+   #Get boot partition offset
+   fdisk -lu /path/to/disk
+   #The offset value is in bytes, whereas fdisk shows a block count, so
+   #you should multiply the value from the "Begin" or "Start" column of
+   #the fdisk output by 512 (or whatever the block size is) to obtain the
+   #offset to mount at.
+   mount -o loop,offset=xxxx /path/to/disk mnt
+ #+end_src
 
-  # Deploy guix image
-#+end_src
