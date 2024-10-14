@@ -187,6 +187,14 @@
   #~(lambda (bootloader root-index image)
       #t))
 
+(define install-u-boot-touchscreen
+  #~(lambda (bootloader root-index image)
+      (let (
+            (u-boot (string-append bootloader "/libexec/u-boot-dtb.imx")))
+        (write-file-on-device u-boot (stat:size (stat u-boot))
+                              image (* 1 1024)))))
+
+
 (define u-boot-touchscreen-bootloader
   (bootloader
    (inherit u-boot-bootloader)
