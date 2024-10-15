@@ -1,4 +1,4 @@
-From bf043b425922b1706a4d9a8da4e25bd5b1ad1be3 Mon Sep 17 00:00:00 2001
+From 2426b961f1eab84895b65017a6cb6748bc0274ed Mon Sep 17 00:00:00 2001
 From: Christoph Buck <christoph.buck@smartoptics.de>
 Date: Thu, 11 Apr 2024 18:22:28 +0200
 Subject: [PATCH] Add initial board setup
@@ -11,16 +11,15 @@ Subject: [PATCH] Add initial board setup
  board/smartoptics/touchscreen/imximage.cfg  | 187 +++++
  board/smartoptics/touchscreen/touchscreen.c |  86 +++
  build.sh                                    |   8 +
- configs/touchscreen_defconfig               | 130 ++++
+ configs/touchscreen_defconfig               | 133 ++++
  cptftp.sh                                   |  27 +
  extlinux.conf                               |  29 +
  include/configs/mx6exceet_common.h          | 399 ++++++++++
- include/configs/touchscreen.h               |  64 ++
+ include/configs/touchscreen.h               |  66 ++
  include/configs/touchscreen.h.bk            |  64 ++
  include/configs/touchscreen_common.h        | 399 ++++++++++
- lib/Kconfig                                 |   2 +-
  tools/Kconfig                               |   4 +-
- 16 files changed, 2201 insertions(+), 3 deletions(-)
+ 15 files changed, 2205 insertions(+), 2 deletions(-)
  create mode 100755 arch/arm/dts/imx6dl-so.dts
  create mode 100644 board/smartoptics/touchscreen/Kconfig
  create mode 100644 board/smartoptics/touchscreen/Makefile
@@ -1177,10 +1176,10 @@ index 0000000000..945638fa35
 +cp extlinux.conf /mnt/c/dump/uboot/
 diff --git a/configs/touchscreen_defconfig b/configs/touchscreen_defconfig
 new file mode 100644
-index 0000000000..4e72ff5a45
+index 0000000000..e6d3f38c76
 --- /dev/null
 +++ b/configs/touchscreen_defconfig
-@@ -0,0 +1,130 @@
+@@ -0,0 +1,133 @@
 +# See imx6q-marsboard.dts
 +#https://www.linux4sam.org/bin/view/Linux4SAM/DriverModelInUBoot
 +# https://github.com/u-boot/u-boot/blob/master/doc/develop/driver-model/usb-info.rst
@@ -1206,7 +1205,8 @@ index 0000000000..4e72ff5a45
 +CONFIG_NR_DRAM_BANKS=1
 +CONFIG_TARGET_TOUCHSCREEN=y
 +CONFIG_BOARD_EARLY_INIT_F=y
-+
++CONFIG_LEGACY_IMAGE_FORMAT=y
++CONFIG_SUPPORT_RAW_INITRD=y
 +CONFIG_MXC_UART=y
 +
 +# Define tree/ driver model
@@ -1309,6 +1309,8 @@ index 0000000000..4e72ff5a45
 +CONFIG_CMD_FS_GENERIC=y
 +CONFIG_CMD_MTDPARTS=y
 +
++
++# CONFIG_GENERATE_SMBIOS_TABLE is not set
 +
 +#/CONFIG_DISTRO_DEFAULTS=y
 diff --git a/cptftp.sh b/cptftp.sh
@@ -1787,10 +1789,10 @@ index 0000000000..e50ca5b6c9
 +#endif                         /* __MX6EXCEET_COMMON_CONFIG_H */
 diff --git a/include/configs/touchscreen.h b/include/configs/touchscreen.h
 new file mode 100644
-index 0000000000..9bb9c99d49
+index 0000000000..bc7c47c350
 --- /dev/null
 +++ b/include/configs/touchscreen.h
-@@ -0,0 +1,64 @@
+@@ -0,0 +1,66 @@
 +/*
 + * Copyright (C) 2016 exceet electronics GmbH
 + * Copyright (C) 2012 Freescale Semiconductor, Inc.
@@ -1810,12 +1812,14 @@ index 0000000000..9bb9c99d49
 +#include "mx6_common.h"
 +
 +#define BOOT_TARGET_DEVICES(func) \
-+    func(USB, usb, 0)             \
-+    func(MMC, mmc, 0)
++    func(MMC, mmc, 1)             \
++    func(USB, usb, 0)
++
 +
 +#include <config_distro_bootcmd.h>
 +
 +#define CFG_EXTRA_ENV_SETTINGS BOOTENV                                  \
++    "fdtfile=imx6dl-so.dtb\0"                                           \
 +    "fdt_high=0xffffffff\0"                                             \
 +    "initrd_high=0xffffffff\0"                                          \
 +    "bootargs=vt.global_cursor_default=0 console=ttymxc1,115200 video=DPI-1:800x480@60M\0" \
@@ -2330,19 +2334,6 @@ index 0000000000..1e2c44522f
 +#endif
 +
 +#endif                         /* __MX6EXCEET_COMMON_CONFIG_H */
-diff --git a/lib/Kconfig b/lib/Kconfig
-index 568892fce4..d7a35d29ac 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -989,7 +989,7 @@ config BLOBLIST_TABLES
- config GENERATE_SMBIOS_TABLE
- 	bool "Generate an SMBIOS (System Management BIOS) table"
- 	depends on SMBIOS
--	default y
-+	default n
- 	help
- 	  The System Management BIOS (SMBIOS) specification addresses how
- 	  motherboard and system vendors present management information about
 diff --git a/tools/Kconfig b/tools/Kconfig
 index 667807b331..7f38c93d0a 100644
 --- a/tools/Kconfig
