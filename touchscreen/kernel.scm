@@ -272,13 +272,14 @@
    (size 'guess)
    (label "grimbard")
    (file-system "ext4")
+   (offset (* 512 2048))
    (flags '(boot))
    (initializer (gexp initialize-root-partition))))
 
 (define touchscreen-image
   (image-without-os
    (format 'disk-image)
-   (partitions (list touchscreen-boot-partition touchscreen-root-partition))))
+   (partitions (list touchscreen-root-partition))))
 
 (define touchscreen-image-type
   (image-type
