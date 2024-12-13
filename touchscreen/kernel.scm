@@ -228,7 +228,7 @@
     ;; account is implicit, and is initially created with the
     ;; empty password.
     (users (cons (user-account
-                  (name "alice")
+                  (name "icepic")
                   (comment "Bob's sister")
                   (group "users")
 
@@ -294,6 +294,6 @@
    (partition-table-type 'mbr)
    (name 'touchscreen-raw-image)))
 
-;touchscreen-raw-image
-linux-touchscreen-6.1
+touchscreen-raw-image
+;; linux-touchscreen-6.1
 ;u-boot-touchscreen-arm
