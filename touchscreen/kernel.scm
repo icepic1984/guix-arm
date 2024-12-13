@@ -111,7 +111,7 @@
     ("CONFIG_CGROUP_CPUACCT" . #t)
     ("CONFIG_CGROUP_PERF" . #t)
     ("CONFIG_SOCK_CGROUP_DATA" . #t)
-    ("CONFIG_BLK_CGROUP_IOCOST" . #t)
+    ;("CONFIG_BLK_CGROUP_IOCOST" . #t) needs to be disabled otherwise fails to compile, important?
     ("CONFIG_CGROUP_NET_PRIO" . #t)
     ("CONFIG_CGROUP_NET_CLASSID" . #t)
     ("CONFIG_MEMCG" . #t)
