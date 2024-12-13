@@ -3,7 +3,7 @@
 ;;  https://stumbles.id.au/getting-started-with-guix-deploy.htmlw
 
 ;; Build
-;; guix system image raspberry-pi.scm --skip-checks --verbosity=3 --no-grafts -e raspberry-pi-barebones-raw-image
+;; guix system image raspberry-pi.scm --skip-checks --verbosity=3 --no-grafts -e raspberry-pi-barebones-raw-imagew
 ;; guix deploy --system=aarch64-linux --no-grafts raspberry-pi.scm
 ;; Bugs
 ; https://issues.guix.gnu.org/66866

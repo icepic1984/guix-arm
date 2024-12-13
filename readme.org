@@ -25,7 +25,11 @@
   #+end_src
  + Build touscreen image
  #+begin_src sh
+   # normal image build
    guix system image  kernel.scm --target=arm-linux-gnueabihf -v3 -c2 -M2 -K --no-grafts
+   # build in container
+   guix shell --container --network --share=/var/guix/daemon-socket/socket --share=/etc/ssl/certs guix guile coreutils
+
  #+end_src
  + Mount disk image to loop back
  #+begin_src sh
